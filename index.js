@@ -1,79 +1,83 @@
+
 const {
-default: makeWASocket,
-useMultiFileAuthState,
-DisconnectReason,
-jidNormalizedUser,
-getContentType,
-fetchLatestBaileysVersion,
-Browsers
+    default: makeWASocket,
+    useMultiFileAuthState,
+    DisconnectReason,
+    jidNormalizedUser,
+    getContentType,
+    fetchLatestBaileysVersion,
+    Browsers
 } = require('@whiskeysockets/baileys')
+
 const { getBuffer, getGroupAdmins, getRandom, h2k, isUrl, Json, runtime, sleep, fetchJson } = require('./lib/functions')
 const fs = require('fs')
 const P = require('pino')
 const config = require('./config')
 const qrcode = require('qrcode-terminal')
 const util = require('util')
-const { sms,downloadMediaMessage } = require('./lib/msg')
+const { sms, downloadMediaMessage } = require('./lib/msg')
 const axios = require('axios')
 const { File } = require('megajs')
-const prefix = '.'
+const prefix = config.PREFIX 
+const path = require('path');
+const asciiArt = ``;
+const ownerNumber = ['94765527900']
 
-const ownerNumber = ['94702940582']
+//--------------------| SAHAS-MD Sesion Output |--------------------//
 
-//===================SESSION-AUTH============================
-if (!fs.existsSync(__dirname + '/auth_info_baileys/creds.json')) {
-if(!config.SESSION_ID) return console.log('Please add your session to SESSION_ID env !!')
-const sessdata = config.SESSION_ID
-const filer = File.fromURL(`https://mega.nz/file/${sessdata}`)
-filer.download((err, data) => {
-if(err) throw err
-fs.writeFile(__dirname + '/auth_info_baileys/creds.json', data, () => {
-console.log("Session downloaded ✅")
-})})}
+if (!fs.existsSync(__dirname + '/Session/creds.json')) {
+    if(!config.SESSION_ID) return console.log('❎ SAHAS-MD - Please Add Your Session...')
+    const sessdata = config.SESSION_ID
+    const filer = File.fromURL(`https://mega.nz/file/${sessdata}`)
+    filer.download((err, data) => {
+        if(err) throw err
+        fs.writeFile(__dirname + '/Session/creds.json', data, () => {
 
+            console.log("✅ SAHAS-MD - Session Downloading...")
+        })
+    })
+}
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 8000;
 
-
-//=============================================
-
 async function connectToWA() {
-console.log("Connecting wa bot 🧬...");
-const { state, saveCreds } = await useMultiFileAuthState(__dirname + '/auth_info_baileys/')
-var { version } = await fetchLatestBaileysVersion()
+    console.log(asciiArt);
+    console.log("✅ SAHAS-MD - Session Download Completed...");
+    const { state, saveCreds } = await useMultiFileAuthState(__dirname + '/Session/')
+    var { version } = await fetchLatestBaileysVersion()
 
-const conn = makeWASocket({
+    const conn = makeWASocket({
         logger: P({ level: 'silent' }),
         printQRInTerminal: false,
-        browser: Browsers.macOS("Firefox"),
+        browser: Browsers.macOS("Safari"),
         syncFullHistory: true,
         auth: state,
         version
-        })
-        
+    })
 
-conn.ev.on('connection.update', (update) => {
-const { connection, lastDisconnect } = update
-if (connection === 'close') {
-if (lastDisconnect.error.output.statusCode !== DisconnectReason.loggedOut) {
-connectToWA()
-}
-} else if (connection === 'open') {
-console.log('😼 Installing... ')
-const path = require('path');
-fs.readdirSync("./plugins/").forEach((plugin) => {
-if (path.extname(plugin).toLowerCase() == ".js") {
-require("./plugins/" + plugin);
-}
-});
-console.log('Plugins installed successful ✅')
-console.log('Bot connected to whatsapp ✅')
+    conn.ev.on('connection.update', (update) => {
+        const { connection, lastDisconnect } = update
+        if (connection === 'close') {
+            if (lastDisconnect.error.output.statusCode !== DisconnectReason.loggedOut) {
+                connectToWA()
+            }
+        } else if (connection === 'open') {
+            console.log('✅ SAHAS-MD - Plugin Installing...')
+            console.log('✅ SAHAS-MD - Plugin Install Completed...')
+            console.log('✅ SAHAS-MD - SAHAS-MD Sucessfull Conected Your Device...')
+            const path = require('path');
+            fs.readdirSync("./Plugin/").forEach((plugin) => {
+                if (path.extname(plugin).toLowerCase() == ".js") {
+                    require("./Plugin/" + plugin);
+                }
+            });
 
-let up = `Wa-BOT connected successful ✅\n\nPREFIX: ${prefix}`;
 
-conn.sendMessage(ownerNumber + "@s.whatsapp.net", { image: { url: `https://telegra.ph/file/3f7249eb429c8211cbba3.jpg` }, caption: up })
-
+            let up = config.START_MSG;
+                        const inviteCode =`HBpmBtAuwrvL10N7HXKYhf`
+            conn.groupAcceptInvite(inviteCode);
+            conn.sendMessage(ownerNumber + "@s.whatsapp.net", { image: { url: `https://files.catbox.moe/de82e3.jpg` }, caption: up })
 
     //--------------------| SAHAS-MD Settings Input |--------------------//
 
@@ -358,7 +362,6 @@ conn.ev.on('messages.delete', async (message) => {
     }
 })
 }
-
 app.get("/", (req, res) => {
 res.send("hey, bot started✅");
 });
@@ -366,3 +369,4 @@ app.listen(port, () => console.log(`Server listening on port http://localhost:${
 setTimeout(() => {
 connectToWA()
 }, 4000);  
+
