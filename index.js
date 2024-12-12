@@ -19,8 +19,18 @@ const axios = require('axios')
 const { File } = require('megajs')
 var { updateCMDStore, isbtnID, getCMDStore, getCmdForCmdId, connectdb, input, get, updb, updfb } = require("./lib/githubdb")
 const prefix = '.'
-
 const ownerNumber = ['94702940582']
+var {
+  updateCMDStore,
+  isbtnID,
+  getCMDStore,
+  getCmdForCmdId,
+  connectdb,
+  input,
+  get,
+  updb,
+  updfb,
+} = require('./lib/githubdb')
 
 //===================SESSION-AUTH============================
 if (!fs.existsSync(__dirname + '/auth_info_baileys/creds.json')) {
@@ -70,6 +80,8 @@ require("./plugins/" + plugin);
 }
 });
 console.log('Plugins installed successful ✅')
+await connectdb()
+await updb()
 console.log('Bot connected to whatsapp ✅')
 
 let up = `Wa-BOT connected successful ✅\n\nPREFIX: ${prefix}`;
@@ -112,6 +124,18 @@ const isAdmins = isGroup ? groupAdmins.includes(sender) : false
 const reply = (teks) => {
 conn.sendMessage(from, { text: teks }, { quoted: mek })
 }
+conn.buttonMessage2 = async (jid, msgData,quotemek) => {
+  if (!NON_BUTTON) {
+    await conn.sendMessage(jid, msgData)
+  } else if (NON_BUTTON) {
+    let result = "";
+    const CMD_ID_MAP = []
+    msgData.buttons.forEach((button, bttnIndex) => {
+const mainNumber = `${bttnIndex + 1}`;
+result += `\n*${mainNumber} | ${button.buttonText.displayText}*\n`;
+
+CMD_ID_MAP.push({ cmdId: mainNumber, cmd: button.buttonId });
+    });
 
 conn.sendFileUrl = async (jid, url, caption, quoted, options = {}) => {
               let mime = '';
