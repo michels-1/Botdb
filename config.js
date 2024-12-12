@@ -6,7 +6,7 @@ function convertToBool(text, fault = 'true') {
 }
 module.exports = {
 SESSION_ID: process.env.SESSION_ID || "",
- AUTO_VOICE: process.env.AUTO_VOICE || "true",
+AUTO_VOICE: process.env.AUTO_VOICE || "true",
   ANTI_BAD_WORDS_ENABLED: process.env.ANTI_BAD_WORDS_ENABLED || "true",
   AUTO_READ_STATUS: process.env.AUTO_READ_STATUS || "true",
   AUTO_READ_CMD: process.env.AUTO_READ_CMD || "true",
@@ -18,5 +18,4 @@ SESSION_ID: process.env.SESSION_ID || "",
   ALWAYS_RECORDING: process.env.ALWAYS_RECORDING || "true",
   ANTI_BOT: process.env.ANTI_BOT || "true",
   ANTI_DELETE: process.env.ANTI_DELETE || "true",
-  packname: process.env.packname || "PONNA TECH",
 };
